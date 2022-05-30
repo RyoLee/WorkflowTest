@@ -1,0 +1,35 @@
+name: CI
+# Workflow file for windows
+on:
+  workflow_dispatch:
+
+jobs:
+  s0:
+    runs-on: windows-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+ 
+  s1:
+    needs: s0
+    runs-on: ubuntu-latest
+    steps:
+    - name: Pack
+      run: |
+        mkdir -p ./pack/f0
+        cd ./pack/f0
+        touch f1
+        touch f2
+        touch f3
+        cd ..
+        zip -r myfile.zip ./*
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        generate_release_notes: true
+        draft: true
+        tag_name: test
+        files: pack/myfile.zip
